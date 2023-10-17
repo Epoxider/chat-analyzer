@@ -5,6 +5,9 @@ from twitch_listener import utils
 import select
 import re
 import codecs
+import logging 
+
+logging.basicConfig(level=logging.INFO)
 
 class connect_twitch(socket):
     
@@ -200,9 +203,11 @@ class connect_twitch(socket):
                 # Parse message text
                 hash_channel_point = message.find("PRIVMSG #" + channel)
                 slice_ = message[hash_channel_point:]
+                logging.info(f'SLICE TEXT: {slice_}')
                 
                 slice_point = slice_.find(":") + 1
                 message_text = slice_[slice_point:]
+                logging.info(f'MSG TEXT: {message_text}')
                 decoded_txt = decode_escapes(message_text).encode('latin1').decode('utf-8')
                 row['text'] = decoded_txt
                 
