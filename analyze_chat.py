@@ -1,4 +1,5 @@
 import pandas as pd
+import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import string
@@ -6,8 +7,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import make_pipeline
 
+# Download the NLTK resources needed for stopwords and tokenization
+nltk.download('punkt')
+nltk.download('stopwords')
+
+channel = 'hasanabi'
+
 # Load the CSV file into a DataFrame
-df = pd.read_csv('path/to/your/csv/file.csv')
+df = pd.read_csv(f'./{channel}.csv')
 
 # Function to preprocess text
 def preprocess_text(text):
@@ -46,3 +53,5 @@ df['predicted_sentiment'] = model.predict(df['processed_text'])
 
 # Show some results
 print(df[['text', 'sentiment', 'predicted_sentiment']].head())
+
+pd.DataFrame(df).to_csv(channel + "analysis" + ".csv", index = False)
