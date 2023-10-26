@@ -38,17 +38,12 @@ def predict_sentiment(text):
     return label_idx
 
 # Mapping from label index to human-readable label
-#label_map = {
-#    0: 'very negative',
-#    1: 'negative',
-#    2: 'neutral',
-#    3: 'positive',
-#    4: 'very positive'
-#}
 label_map = {
-    0: 'negative',
-    1: 'neutral',
-    2: 'positive',
+    0: 'very negative',
+    1: 'negative',
+    2: 'neutral',
+    3: 'positive',
+    4: 'very positive'
 }
 
 # Apply the function to your text column
