@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 with open('config.json', 'r') as f:
     config = json.load(f)
     channel = config['channel']
-    df = pd.read_csv(f'{channel}.csv')
+    df = pd.read_csv(f'{channel}_analysis.csv')
 
 # Get the number of comments for each sentiment
 counts = df['predicted_label'].value_counts()
@@ -24,4 +24,4 @@ plt.bar(counts.index, counts.values)
 plt.xlabel('Sentiment')
 plt.ylabel('Count')
 plt.title('Sentiment')
-#plt.show()
+plt.show()

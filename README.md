@@ -1,45 +1,44 @@
-# Twitch listener bot
+# Twitch Chat Sentiment Analysis using BERT
 
-An easy to use Python bot for retrieving Twitch chat data from multiple streams/channels simultaneously. Includes functionality to generate adjacency matrices between the streams, for the purpose of network modelling. All files are generated in your working directory.  
+## Overview
 
-# Installation:
-```
-pip install twitch-listener
-```
+This repository contains an advanced Natural Language Processing (NLP) pipeline that performs real-time sentiment analysis on Twitch livestream chats. Leveraging the state-of-the-art BERT (Bidirectional Encoder Representations from Transformers) model, this project aims to provide a granular understanding of the emotional landscape within a Twitch channel's community. This is an invaluable tool for streamers, marketers, and sociologists interested in the dynamics of online social interactions.
 
+## Features
 
-# Steps for acquiring Twitch credentials (skip if you already have these):
-1) Get a twitch.tv account 
-	- get one here https://www.twitch.tv/signup
-2) Obtain a Twitch client id
-	- Get yours by registering an app here https://dev.twitch.tv/console/apps/create
-	- (You can set 'OAuth Redirect URL' to 'http://localhost')
-3) Acquire a Twitch OAuth token
-	- Get yours here https://twitchapps.com/tmi/
+- **Real-time Data Scraping**: Efficiently scrapes Twitch chat messages and associated metadata.
+- **BERT-based Sentiment Analysis**: Utilizes the BERT model for sequence classification to perform sentiment analysis on chat messages.
+- **Data Serialization**: Stores the analyzed data in a structured CSV format for further analysis.
+- **Configurable**: Easily configurable via a JSON file to specify the Twitch channel of interest.
 
-Store these values securely. You now have everything you need to use TwitchListener.
+## Technical Stack
 
-# Example usage:
+- Python
+- Pandas for data manipulation
+- Transformers library for BERT model
+- Torch for tensor operations
+
+## Code Structure
+
+The code is organized into modular functions for ease of understanding and extensibility.
+
+- `config.json`: Configuration file containing channel information.
+- `encode_review(text)`: Function to tokenize and encode the chat messages using BERT tokenizer.
+- `predict_sentiment(text)`: Function to predict the sentiment label of an encoded message.
+  
+### Sentiment Prediction Logic
+
+The function `encode_review` tokenizes the input text and pads it to a maximum length of 512 tokens. It returns a PyTorch tensor that is fed into the BERT model.
 
 ```python
-from twitch_listener import listener
-
-# Connect to Twitch
-bot = listener.connect_twitch('yourUsernameHere', 
-                             'yourOauthHere', 
-                             'yourClientIDHere')
-
-# List of channels to connect to
-channels_to_listen_to = ['Northernlion', 'DumbDog', 'DanGheesling']
-
-# Scrape live chat data into raw log files. (Duration is seconds)
-bot.listen(channels_to_listen_to, duration = 1800) 
-
-# Convert log files into .CSV format
-bot.parse_logs(timestamp = True)
-
-# Generate adjacency matrix
-bot.adj_matrix(weighted = False, matrix_name = "streamer_network.csv")
+def encode_review(text):
+    return tokenizer.encode_plus(
+        text,
+        add_special_tokens=True,
+        max_length=512,
+        return_token_type_ids=False,
+        pad_to_max_length=True,
+        return_attention_mask=True,
+        return_tensors='pt',
+    )
 ```
-
-
