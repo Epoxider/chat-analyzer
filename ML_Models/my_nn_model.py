@@ -109,3 +109,5 @@ print(report)
 val_loss, val_accuracy = model.evaluate([X_val_text, X_val_time, X_val_user], y_val)
 print(f'Validation Loss: {val_loss}')
 print(f'Validation Accuracy: {val_accuracy}')
+
+model.save('./my_model')
