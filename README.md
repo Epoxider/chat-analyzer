@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository showcases an innovative Natural Language Processing (NLP) pipeline, central to which is a custom-trained neural network designed for real-time sentiment analysis on Twitch livestream chats. The neural net dramatically outperforms Google's renowned BERT (Bidirectional Encoder Representations from Transformers) model, achieving an impressive accuracy of 90% compared to BERT's 41%. This project is crafted to offer a nuanced understanding of a Twitch channel's community, setting a new standard for sentiment analysis. Tailored for streamers, content creators, and those interested in the intricacies of online social interactions, this tool marks a significant leap forward in assessing and engaging with live audience sentiments.
+This repository showcases an innovative Natural Language Processing (NLP) pipeline, where at the heart is a custom-trained neural network designed for real-time sentiment analysis on livestream chats. The neural net dramatically outperforms Google's renowned BERT (Bidirectional Encoder Representations from Transformers) model, achieving an accuracy of 90% compared to BERT's 41%. This project is made to offer a nuanced understanding of a Twitch channel's community, setting a new standard for sentiment analysis. Tailored for streamers, content creators, and those interested in the intricacies of online social interactions, this tool marks a significant leap forward in assessing and engaging with live audience sentiments.
 
 ## Features
 
