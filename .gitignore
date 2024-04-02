@@ -1,5 +1,6 @@
 testing.py
 secrets.json
+ChatData/data_set
 *.log
 *.txt
 .DS_Store
