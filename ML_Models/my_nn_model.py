@@ -1,4 +1,3 @@
-# Importing the necessary libraries
 from datetime import datetime
 import numpy as np
 import pandas as pd
@@ -11,12 +10,13 @@ from sklearn.metrics import classification_report
 
 
 # Load the labeled dataset
-#df = pd.read_csv('./ChatData/labeled_dataset.csv')
-df = pd.read_csv('./manual_labeled_hasan.csv')
-
+#df = pd.read_csv('./CSV_Data/manual_labeled_has.csv')
+df = pd.read_csv('./ChatData/labeled_dataset.csv')
 
 # Drop missing or NaN values
 df.dropna(inplace=True)
+
+############ START MODEL TRAINING ###############
 
 # Tokenizing text messages
 tokenizer = tf.keras.preprocessing.text.Tokenizer()
@@ -26,6 +26,7 @@ X_text = tf.keras.preprocessing.sequence.pad_sequences(X_text)
 
 # Function to convert ISO 8601 timestamp to Unix timestamp
 def convert_to_unix(timestamp):
+    #return datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S,%f').timestamp()
     return datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S.%fZ').timestamp()
 
 # Apply the conversion to the 'date' column
@@ -40,11 +41,12 @@ user_freq = df['user'].value_counts().to_dict()
 X_user = df['user'].map(user_freq).values.reshape(-1, 1)
 
 # Sentiment labels
+df['sentiment'] = df['sentiment'].map({-1: 0, 0: 1, 1: 2})
 y = to_categorical(df['sentiment'])  # One-hot encoding of sentiment labels
 
 # Define input layers
 text_input = tf.keras.Input(shape=(X_text.shape[1],), dtype='int32', name='text')
-time_input = tf.keras.Input(shape=(1,), name='time')
+time_input = tf.keras.Input(shape=(1,), name='date')
 user_input = tf.keras.Input(shape=(1,), name='user')
 
 # Embedding layer for text (with dropout for regularization)
@@ -87,6 +89,11 @@ X_train_text, X_val_text, X_train_time, X_val_time, X_train_user, X_val_user, y_
 
 # Model Training
 model.fit([X_train_text, X_train_time, X_train_user], y_train, epochs=50, validation_data=([X_val_text, X_val_time, X_val_user], y_val))
+model.save('./my_model')
+
+############ END MODEL TRAINING ###############
+
+
 
 # Make predictions on the validation set
 y_val_pred_probs = model.predict([X_val_text, X_val_time, X_val_user])
@@ -111,4 +118,6 @@ val_loss, val_accuracy = model.evaluate([X_val_text, X_val_time, X_val_user], y_
 print(f'Validation Loss: {val_loss}')
 print(f'Validation Accuracy: {val_accuracy}')
 
-model.save('./my_model')
+with open('./Eval_Reports/labeled_data_eval.txt', 'a+') as f:
+    f.truncate(0)
+    f.write(report)

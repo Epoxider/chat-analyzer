@@ -1,6 +1,8 @@
 import json
+import numpy as np
 import pandas as pd
 from transformers import BertForSequenceClassification, BertTokenizer
+from sklearn.metrics import classification_report
 import torch
 
 with open('config.json', 'r') as f:
@@ -9,7 +11,7 @@ with open('config.json', 'r') as f:
 
 # Load the CSV file into a DataFrame
 #df = pd.read_csv(f'./{channel}.csv')
-df = pd.read_csv(f'./ChatData/labeled_datasetcsv')
+df = pd.read_csv(f'./ChatData/labeled_dataset.csv')
 
 
 # Initialize BERT tokenizer and model
