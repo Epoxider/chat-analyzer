@@ -209,22 +209,22 @@ class connect_twitch(socket):
                 message_text = slice_[slice_point:]
                 logging.info(f'MSG TEXT: {message_text}')
                 decoded_txt = decode_escapes(message_text).encode('latin1').decode('utf-8')
-                row['text'] = decoded_txt
+                row['message'] = decoded_txt
                 
                 # Parse username
                 b = message.find("b")
                 exclam = message.find("!")
                 username = message[b:exclam][3:]
-                row['username'] = username
+                row['user'] = username
                 
                 # Parse timestamp 
                 # (note: dates are in weirdo American format)
                 if timestamp:
                     datetime = message[:23] 
-                    row['timestamp'] = datetime
+                    row['date'] = datetime
             
                 # Store observations
-                if remove_bots and row['username'] in self.botlist:
+                if remove_bots and row['user'] in self.botlist:
                     pass
                 else:
                     data.append(row)

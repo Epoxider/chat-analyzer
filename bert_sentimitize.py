@@ -8,7 +8,9 @@ with open('config.json', 'r') as f:
     channel = config['channel']
 
 # Load the CSV file into a DataFrame
-df = pd.read_csv(f'./{channel}.csv')
+#df = pd.read_csv(f'./{channel}.csv')
+df = pd.read_csv(f'./ChatData/labeled_datasetcsv')
+
 
 # Initialize BERT tokenizer and model
 tokenizer = BertTokenizer.from_pretrained("../bert-base-multilingual-uncased-sentiment")
@@ -47,9 +49,13 @@ label_map = {
 }
 
 # Apply the function to your text column
-df['predicted_label_idx'] = df['text'].apply(predict_sentiment)
+#df['predicted_label_idx'] = df['text'].apply(predict_sentiment)
+#df['predicted_label'] = df['predicted_label_idx'].apply(lambda x: label_map[x])
+
+df['predicted_label_idx'] = df['Message'].apply(predict_sentiment)
 df['predicted_label'] = df['predicted_label_idx'].apply(lambda x: label_map[x])
 
 # Save the DataFrame with the new columns
 
-pd.DataFrame(df[['username', 'text', 'predicted_label_idx', 'predicted_label', 'timestamp']]).to_csv(channel + "_analysis" + ".csv", index = False)
+#pd.DataFrame(df[['username', 'text', 'predicted_label_idx', 'predicted_label', 'timestamp']]).to_csv(channel + "_analysis" + ".csv", index = False)
+pd.DataFrame(df[['User', 'Message', 'predicted_label_idx', 'predicted_label', 'Time']]).to_csv('sample_data' + "_analysis" + ".csv", index = False)

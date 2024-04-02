@@ -1,8 +1,8 @@
 testing.py
 secrets.json
 *.log
-*.csv
 *.txt
+.DS_Store
 /__pycache__
 /.vscode
 twitch_listener/__pycache__

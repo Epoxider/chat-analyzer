@@ -25,6 +25,12 @@ The code is organized into modular functions for ease of understanding and exten
 - `config.json`: Configuration file containing channel information.
 - `encode_review(text)`: Function to tokenize and encode the chat messages using BERT tokenizer.
 - `predict_sentiment(text)`: Function to predict the sentiment label of an encoded message.
+
+### How To Run
+
+1. Run scrape_chat.py to collect data
+2. Run pretrained_analyzer.py to generate CSV containing sentiment label
+3. Run analyzer_chat.py for data visualizations
   
 ### Sentiment Prediction Logic
 

@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 # Sample code to generate some random data
-df = pd.read_csv('../ChatData/data_set/d132e42bde1b8d87d58fcfb8838429ce697c3ef4_6.csv')
+df = pd.read_csv('./ChatData/labeled_dataset.csv')
 
 
 # Drop missing or NaN values
