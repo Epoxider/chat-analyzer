@@ -12,7 +12,7 @@ df = pd.read_csv('./ChatData/labeled_dataset.csv')
 df.dropna(inplace=True)
 
 # Load the saved model
-model = tf.keras.models.load_model('./my_model/')
+model = tf.keras.models.load_model('./my_model.keras')
 
 # Tokenize text messages
 tokenizer = tf.keras.preprocessing.text.Tokenizer()

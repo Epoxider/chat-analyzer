@@ -89,7 +89,7 @@ X_train_text, X_val_text, X_train_time, X_val_time, X_train_user, X_val_user, y_
 
 # Model Training
 model.fit([X_train_text, X_train_time, X_train_user], y_train, epochs=50, validation_data=([X_val_text, X_val_time, X_val_user], y_val))
-model.save('./my_model')
+model.save('./my_model.keras')
 
 ############ END MODEL TRAINING ###############
 
