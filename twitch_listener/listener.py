@@ -114,8 +114,7 @@ class connect_twitch(socket):
             
         return splits
 
-    def parse_logs(self, channels = [], timestamp = True, remove_bots = False):
-
+    def parse_logs(self, channels=[], timestamp=True, remove_bots=False):
         """
         Method for converting raw data from text logs into .CSV format.
 
@@ -126,7 +125,7 @@ class connect_twitch(socket):
                     was retrieved, not sent
             channels (list, optional)     
                 - List of channel usernames for whom the text logs 
-                    will be parsed into csv format.
+                    will be parsed into CSV format.
                 - If none are specified, the channels that are 
                     currently joined will be parsed
             remove_bots (bool, optional)
@@ -139,10 +138,8 @@ class connect_twitch(socket):
                 channels = self.joined
             except:
                 print("Please either connect to channels, \
-                      or specify a list of log files to parse.")
-                
-        
-        
+                    or specify a list of log files to parse.")
+
         # Set up regex for hex decoding
         ESCAPE_SEQUENCE_RE = re.compile(r'''
             ( \\U........      # 8-digit hex escapes
@@ -152,17 +149,17 @@ class connect_twitch(socket):
             | \\N\{[^}]+\}     # Unicode characters by name
             | \\[\\'"abfnrtv]  # Single-character escapes
             )''', re.UNICODE | re.VERBOSE)
-        
+
         def decode_escapes(s):
             def decode_match(match):
                 return codecs.decode(match.group(0), 'unicode-escape')
-        
+
             return ESCAPE_SEQUENCE_RE.sub(decode_match, s)
-        
-        # Check if string given for channe;s
+
+        # Check if string is given for channels
         if type(channels) == str:
             channels = [channels]
-            
+
         # Retrieve data from logs
         for channel in channels:
             if not channel.endswith(".log"):
@@ -172,66 +169,51 @@ class connect_twitch(socket):
                 for line in f:
                     if line not in lines:
                         lines.append(line)
-                        
+
             # Separate the raw strings into separate messages 
-            split_messages = []
-            for line in lines:
-                count = line.count('.tmi.twitch.tv PRIVMSG #')
-                entryInfo = 'Your host is tmi.twitch.tv' in line or 'End of /NAMES list\\r\\n' in line
-                if entryInfo:
-                    pass
-                
-                elif count == 0:
-                    pass
-                elif count == 1 and not entryInfo:
-                    if line.endswith('\\r\\n\'\n'):
-                        split_messages.append(line[:-6])
-                    else:
-                        split_messages.append(line)     
-                else:
-                    for msg in self._split_line(line):
-                        split_messages.append(msg)
-            
-            # Parse username, message text and (optional) datetime
-            data = []          
+            split_messages = [line for line in lines if ".tmi.twitch.tv PRIVMSG #" in line]
+
+            # Parse username, message text, and (optional) datetime
+            data = []
             for message in split_messages:
-                username = None
-                message_text = None
-                datetime = None
                 row = {}
-                
+
                 # Parse message text
-                hash_channel_point = message.find("PRIVMSG #" + channel)
-                slice_ = message[hash_channel_point:]
-                logging.info(f'SLICE TEXT: {slice_}')
-                
-                slice_point = slice_.find(":") + 1
-                message_text = slice_[slice_point:]
-                logging.info(f'MSG TEXT: {message_text}')
+                colon_index = message.rfind(":")
+                message_text = message[colon_index + 1:].strip() if colon_index != -1 else ""
+
+                # Decode escape sequences and remove unwanted characters
+                message_text = codecs.decode(message_text, 'unicode_escape')
+                message_text = message_text.replace("\r\n", "").replace("\n", "").replace("\r", "").replace("'", "").strip()
+
+                # Clean up any remaining excessive whitespace
+                message_text = re.sub(r'\s+', ' ', message_text).strip()
+
+                # Decode the final message and store it
                 decoded_txt = decode_escapes(message_text).encode('latin1').decode('utf-8')
                 row['message'] = decoded_txt
-                
-                # Parse username
-                b = message.find("b")
-                exclam = message.find("!")
-                username = message[b:exclam][3:]
+
+                # Parse username (after the b' and before the exclamation mark)
+                username_start = message.find('b\':') + 3
+                username_end = message.find('!', username_start)
+                username = message[username_start:username_end] if username_start > 0 and username_end > 0 else ""
                 row['user'] = username
-                
-                # Parse timestamp 
-                # (note: dates are in weirdo American format)
+
+                # Parse timestamp
                 if timestamp:
-                    datetime = message[:23] 
-                    row['date'] = datetime
-            
-                # Store observations
-                if remove_bots and row['user'] in self.botlist:
-                    pass
-                else:
+                    row['date'] = message[:23]  # Extract timestamp from the beginning
+
+                # Store observations, excluding bot messages if necessary
+                if not (remove_bots and row['user'] in self.botlist):
                     data.append(row)
-            
-            # Write data to file
+
+            # Write data to CSV
             if len(data) > 0:
-                pd.DataFrame(data).to_csv(channel + ".csv", index = False)
+                with open(channel + ".csv", mode='w', newline='', encoding='utf-8') as file:
+                    pd.DataFrame(data).to_csv(file, index=False)
+            #if len(data) > 0:
+            #    pd.DataFrame(data).to_csv(channel + ".csv", index=False)
+
                         
     def adj_matrix(self, channels = [], weighted = True, matrix_name = None, 
                      ignore_bots = True):
